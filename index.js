@@ -16,13 +16,35 @@ var baseStore = function () {
         'DESTROY': function (action) {
             
             this._destroy(action.id);
-            return this._emitChange(action.id);
+            return this._emitChange(null);
             
         }.bind(this),
         
         'UPDATE': function (action) {
             
             this._update(action.id, action.value);
+            return this._emitChange(this.get(action.id));
+            
+        }.bind(this),
+        
+        'CLEAR': function (action) {
+            
+            this._clear(action.id);
+            return this._emitChange(this.get(action.id));
+            
+        }.bind(this),
+                
+        'DROP': function () {
+            
+            this._drop();
+            this._drop();
+            return this._emitChange(null);
+            
+        }.bind(this),
+        
+        'REPLACE': function (action) {
+            
+            this._replace(action.id, action.value);
             return this._emitChange(this.get(action.id));
             
         }.bind(this)
@@ -35,9 +57,15 @@ var baseStore = function () {
         if (this.defaults)
             value = this.defaults();
         
-        this._update(id, value);
+        this._replace(id, value);
 
         return id;
+    }
+    
+    this._drop = function () {
+        
+        store = [];
+        
     }
     
     this._create = function (id, value) {
@@ -86,6 +114,18 @@ var baseStore = function () {
 
     }
     
+    this._replace = function (id, value) {
+        
+        store = store.map(function(item) {
+            if (item.id == id) {
+                item.value = value;
+                return item;
+            }
+            
+            return item
+        })
+    }
+    
     this._exists = function (id) {
 
         return store.some(function(item) {
@@ -99,7 +139,6 @@ var baseStore = function () {
         store = store.filter(function(item) {
             return item.id != id;
         });
-
     }
 
     this._emitChange = function (value) {
@@ -109,7 +148,7 @@ var baseStore = function () {
         subscribers.forEach(function (callback) {
             callback(value);
         })
-        return value.id;
+        return value;
     }
 
     this._registerAction = function (action, callback) {
@@ -120,6 +159,9 @@ var baseStore = function () {
 
     this.emitAction = function (action, object) {
 
+        if (!actions[action])
+            return console.warn('No action called: "%s"', action);
+        
         return actions[action].call(this, object)
 
     }
