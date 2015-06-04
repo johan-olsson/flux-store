@@ -1,0 +1,23 @@
+{
+  "name": "flux-store",
+  "version": "0.0.1",
+  "description": "A helper to make storing data simple. With syntax inspired by React.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johan-olsson/flux-store.git"
+  },
+  "author": "Johan Olsson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/johan-olsson/flux-store/issues"
+  },
+  "homepage": "https://github.com/johan-olsson/flux-store#readme",
+  "dependencies": {
+    "underscore": "^1.8.3",
+    "uuid-js": "^0.7.5"
+  }
+}
